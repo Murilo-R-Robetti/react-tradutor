@@ -1,4 +1,4 @@
-
+import { useState,useEffect } from "react";
 
 function App() {
   const languages = [
@@ -9,7 +9,17 @@ function App() {
     { code: "it", name: "Italiano" },
     { code: "pt-br", name: "Português" },
   ];
-
+  const [texto, setTexto] = useState("")
+  const [traduz, setTraduz] = useState("")
+  function Tradutor() {
+    fetch(`https://api.mymemory.translated.net/get?q=${texto}&langpair=en-us|pt-br`)
+        .then((resposta) => resposta.json())
+        .then((dados) => setTraduz(dados.responseData.translatedText))
+        .catch((error) => {
+            alert("Erro:", error);
+        });
+        console.log(traduz)
+}
   let isLoading = false
   let error = ""
 
@@ -49,18 +59,18 @@ function App() {
               </svg>
             </button>
 
-            <select
+            <select 
               className="text-sm text-textColor bg-transparent border-none focus:outline-none cursor-pointer"
               value="pt-br"
             >
-              <option value="pt-br">Português</option>
+              <option value="pt-br" selected>Português</option>
               <option value="en-us">Inglês</option>
             </select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="p-4">
-              <textarea
+              <textarea value={texto} onChange={(evento) => setTexto(evento.target.value)} 
                 className="w-full h-40 text-lg text-textColor bg-transparent resize-none border-none outline-none"
                 placeholder="Digite seu texto..."                
               ></textarea>
@@ -72,7 +82,7 @@ function App() {
                   <div className="animate-spin rounded-full h-8 w-8 border-blue-500 border-t-2"></div>
                 </div>
               ) : (
-                <p className="text-lg text-textColor">Colocar aqui o texto traduzido</p>
+                <p className="text-lg text-textColor">{texto}</p>
               )}
             </div>
           </div>
@@ -86,7 +96,7 @@ function App() {
       </main>
 
       <footer className="bg-white border-t border-gray-200 mt-auto">
-        <div className="max-w-5xl mx-auto px-4 py-3 text-sm text-headerColor">
+        <div className="max-w-5xl mx-auto px-4 py-3 text-sm text-headerColor text-center">
           &copy; {new Date().getFullYear()} Tradutor
         </div>
       </footer>
